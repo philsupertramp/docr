@@ -31,7 +31,13 @@ export CURRENT_UID=$(id -u):$(id -g)
 help() {
   echo -e "
 ==============================================================================
-docr [COMMAND]
+Usage: docr [COMMAND]
+
+Optional pass [COMMAND], else pass a command to execute in your application
+container.
+Configure your application using a .docr or docr.conf file in your current
+directory.
+
 Container orchestration:
   --logs     -l    : get logs from the main app
   --status   -i    : environment status
@@ -44,7 +50,6 @@ Container orchestration:
   --help     -h    : this help
 
 Tool management:
-  --install        : installs the build in the current directory
   --upgrade        : upgrades the tool binary to the most recent version
 ==============================================================================
 "
@@ -204,15 +209,15 @@ upgrade() {
 
     make build
 
-    install
+    _install
   )
 }
-install() {
+_install() {
   if [ ! -d ~/bin ];
   then
     mkdir -p ~/bin
   fi
-  scp docr ~/bin/docr
+  mv docr ~/bin/docr
 
 
   if [[ "$(sed 's/:/\n/g' <<< "${PATH}" | grep "${HOME}"/bin)" == "" ]];
@@ -229,7 +234,6 @@ install() {
   exit 0
 }
 
-echo "Input: $@"
 load_config
 ensure_docker_running
 refresh_CONTAINER_ID
@@ -273,7 +277,7 @@ case $1 in
     upgrade
     ;;
   --install)
-    install
+    _install
     ;;
   *)
     run $@
