@@ -211,6 +211,7 @@ upgrade() {
 
     _install
   )
+  rm -rf "${tmp_dir}"
 }
 _install() {
   if [ ! -d ~/bin ];
