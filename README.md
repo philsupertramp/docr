@@ -69,3 +69,6 @@ with
 - `CONTAINER_NAME`: The name of your application container, i.e. the "service" name in your `docker-compose` config
 - `BOOTSTRAP_SCRIPT`: [OPTIONAL] a bash script to bootstrap your application, once the images are built
 
+## Contribution:
+Feel free to contribute to the project and submit PRs, bug reports or feature requests as issues!
+
