@@ -22,10 +22,10 @@ COMPOSE_DIR=${ROOT_DIR}/${COMPOSE_ROOT}
 cur_dir="$(pwd)"
 CONTAINER_ID=""
 CONTAINER_NAME="${CONTAINER_NAME}"
-COMPOSE_CONTAINER_NAME="compose-${CONTAINER_NAME}"
+COMPOSE_CONTAINER_NAME=""
 BOOTSTRAP_SCRIPT="${BOOTSTRAP_SCRIPT}"
 
-COMPOSE_COMMAND="docker-compose --no-ansi"
+COMPOSE_COMMAND="docker-compose --ansi never"
 export CURRENT_UID=$(id -u):$(id -g)
 
 help() {
@@ -60,11 +60,14 @@ refresh_CONTAINER_ID() {
 }
 
 set_COMPOSE_CONTAINER_NAME() {
-  # do some magic to figure out docker-compose version
-  # old
-  COMPOSE_CONTAINER_NAME="compose-${CONTAINER_NAME}"
-  # new
-  # COMPOSE_CONTAINER_NAME="compose_${CONTAINER_NAME}"
+  ver=($(docker-compose version --short | sed 's,\.,\n,g'))
+  if [[ ${ver[0]} -eq 2  ]];
+  then
+    prefix="compose-"
+  else
+    prefix="compose_"
+  fi
+  COMPOSE_CONTAINER_NAME="${prefix}${CONTAINER_NAME}"
 }
 
 start_container() {
@@ -185,13 +188,11 @@ load_config() {
       PROJECT_ROOT="${PROJECT_ROOT//PROJECT_ROOT=/}"
       COMPOSE_ROOT="$(grep "COMPOSE_ROOT" < "${cfg_file}")"
       COMPOSE_ROOT="${COMPOSE_ROOT//COMPOSE_ROOT=/}"
-      
+
       COMPOSE_DIR=${PROJECT_ROOT}/${COMPOSE_ROOT}
-      
+
       CONTAINER_NAME="$(grep "CONTAINER_NAME" < "${cfg_file}")"
       CONTAINER_NAME="${CONTAINER_NAME//CONTAINER_NAME=/}"
-      COMPOSE_CONTAINER_NAME="compose-${CONTAINER_NAME}"
-      
       BOOTSTRAP_SCRIPT="$(grep "BOOTSTRAP_SCRIPT" < "${cfg_file}")"
       BOOTSTRAP_SCRIPT="${BOOTSTRAP_SCRIPT//BOOTSTRAP_SCRIPT=/}"
     fi
@@ -204,7 +205,7 @@ upgrade() {
     git clone https://github.com/philsupertramp/docr .
     git fetch --tags 
     latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)
-    
+
     git checkout "${latestTag}"
 
     make build
@@ -236,6 +237,7 @@ _install() {
 }
 
 load_config
+set_COMPOSE_CONTAINER_NAME
 ensure_docker_running
 refresh_CONTAINER_ID
 
