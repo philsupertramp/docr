@@ -16,9 +16,9 @@
 
 set -e;
 
-ROOT_DIR=${PROJECT_ROOT}
+PROJECT_ROOT=${PROJECT_ROOT}
 
-COMPOSE_DIR=${ROOT_DIR}/${COMPOSE_ROOT}
+COMPOSE_DIR=${PROJECT_ROOT}/${COMPOSE_ROOT}
 cur_dir="$(pwd)"
 CONTAINER_ID=""
 CONTAINER_NAME="${CONTAINER_NAME}"
@@ -102,7 +102,7 @@ remove() {
 }
 
 create() {
-    cd ${ROOT_DIR};
+    cd ${PROJECT_ROOT};
     if [ -f "${BOOTSTRAP_SCRIPT}" ]; then
       bash "${BOOTSTRAP_SCRIPT}";
     fi
@@ -147,7 +147,7 @@ stop() {
 down() {
     cd ${COMPOSE_DIR};
     $($COMPOSE_COMMAND down);
-    cd ${ROOT_DIR};
+    cd ${PROJECT_ROOT};
 }
 
 run() {
@@ -195,6 +195,8 @@ load_config() {
       CONTAINER_NAME="${CONTAINER_NAME//CONTAINER_NAME=/}"
       BOOTSTRAP_SCRIPT="$(grep "BOOTSTRAP_SCRIPT" < "${cfg_file}")"
       BOOTSTRAP_SCRIPT="${BOOTSTRAP_SCRIPT//BOOTSTRAP_SCRIPT=/}"
+
+      break
     fi
   done
 }
