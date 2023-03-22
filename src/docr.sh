@@ -193,7 +193,7 @@ load_config() {
 
       CONTAINER_NAME="$(grep "CONTAINER_NAME" < "${cfg_file}")"
       CONTAINER_NAME="${CONTAINER_NAME//CONTAINER_NAME=/}"
-      BOOTSTRAP_SCRIPT="$(grep "BOOTSTRAP_SCRIPT" < "${cfg_file}")"
+      BOOTSTRAP_SCRIPT="$(grep "BOOTSTRAP_SCRIPT" < "${cfg_file}" || echo "foo.sh")"
       BOOTSTRAP_SCRIPT="${BOOTSTRAP_SCRIPT//BOOTSTRAP_SCRIPT=/}"
 
       break
