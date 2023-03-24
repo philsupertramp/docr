@@ -24,6 +24,7 @@ CONTAINER_ID=""
 CONTAINER_NAME="${CONTAINER_NAME}"
 COMPOSE_CONTAINER_NAME=""
 BOOTSTRAP_SCRIPT="${BOOTSTRAP_SCRIPT}"
+PROJECT_NAME="${PROJECT_NAME:-"compose"}"
 
 COMPOSE_COMMAND="docker-compose --ansi never"
 export CURRENT_UID=$(id -u):$(id -g)
@@ -41,6 +42,7 @@ directory.
 Container orchestration:
   --logs     -l    : get logs from the main app
   --status   -i    : environment status
+  --list     -ps   : list running containers
   --start    -s    : starts the container
   --stop     -q    : stops the container
   --restart        : restarts the container
@@ -63,11 +65,11 @@ set_COMPOSE_CONTAINER_NAME() {
   ver=($(docker-compose version --short | sed 's,\.,\n,g'))
   if [[ ${ver[0]} -eq 2  ]];
   then
-    prefix="compose-"
+    prefix="-"
   else
-    prefix="compose_"
+    prefix="_"
   fi
-  COMPOSE_CONTAINER_NAME="${prefix}${CONTAINER_NAME}"
+  COMPOSE_CONTAINER_NAME="${PROJECT_NAME}${prefix}${CONTAINER_NAME}"
 }
 
 start_container() {
@@ -170,7 +172,7 @@ status() {
     then
       echo "Container(s) not running."
     else
-      echo "Container(s) running."
+      echo "Container(s) running as ${CONTAINER_ID}."
     fi
   fi
 
@@ -196,6 +198,9 @@ load_config() {
       BOOTSTRAP_SCRIPT="$(grep "BOOTSTRAP_SCRIPT" < "${cfg_file}" || echo "foo.sh")"
       BOOTSTRAP_SCRIPT="${BOOTSTRAP_SCRIPT//BOOTSTRAP_SCRIPT=/}"
 
+      PROJECT_NAME="$(grep "PROJECT_NAME" < "${cfg_file}" || echo "compose")"
+      PROJECT_NAME="${PROJECT_NAME//PROJECT_NAME=/}"
+      COMPOSE_COMMAND="${COMPOSE_COMMAND} -p ${PROJECT_NAME}"
       break
     fi
   done
@@ -238,6 +243,13 @@ _install() {
   exit 0
 }
 
+list-containers() {
+  (
+    cd ${COMPOSE_DIR}
+    docker-compose ps
+  )
+}
+
 load_config
 set_COMPOSE_CONTAINER_NAME
 ensure_docker_running
@@ -271,6 +283,9 @@ case $1 in
     ;;
   --status|-i)
     status
+    ;;
+  --list|-ps)
+    list-containers
     ;;
   --create)
     create

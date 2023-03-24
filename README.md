@@ -30,6 +30,7 @@ docr --upgrade
 ```shell
 docr -h
 
+
 ==============================================================================
 Usage: docr [COMMAND]
 
@@ -41,6 +42,7 @@ directory.
 Container orchestration:
   --logs     -l    : get logs from the main app
   --status   -i    : environment status
+  --list     -ps   : list running containers 
   --start    -s    : starts the container
   --stop     -q    : stops the container
   --restart        : restarts the container
@@ -62,12 +64,14 @@ PROJECT_ROOT=/path/to/project/root
 COMPOSE_ROOT=docker/
 CONTAINER_NAME=my-app
 BOOTSTRAP_SCRIPT=bootstrap.sh
+PROJECT_NAME=compose
 ```
 with
 - `PROJECT_ROOT`: The root directory of your project
-- `COMPOSE_ROOT`: [OPTIONAL] The relative path to the directory that contains your `docker-compose.yaml` file
+- `COMPOSE_ROOT`: The relative path to the directory that contains your `docker-compose.yaml` file
 - `CONTAINER_NAME`: The name of your application container, i.e. the "service" name in your `docker-compose` config
 - `BOOTSTRAP_SCRIPT`: [OPTIONAL] a bash script to bootstrap your application, once the images are built
+- `PROJECT_NAME`: [OPTIONAL] the name of the project, e.g. root directory name
 
 ## Contribution:
 Feel free to contribute to the project and submit PRs, bug reports or feature requests as issues!
