@@ -49,6 +49,8 @@ Container orchestration:
   --remove   -rm   : stops the container and removes associated volumes
   --recreate       : recreates the container environment
   --rebuild        : rebuilds the container environment
+  --attach   -a    : attach to a running container instance
+  --create         : executes the \$BOOTSTRAP_SCRIPT an starts the container
   --help     -h    : this help
 
 Tool management:
@@ -254,6 +256,7 @@ load_config
 set_COMPOSE_CONTAINER_NAME
 ensure_docker_running
 refresh_CONTAINER_ID
+
 
 
 case $1 in

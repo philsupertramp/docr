@@ -30,7 +30,6 @@ docr --upgrade
 ```shell
 docr -h
 
-
 ==============================================================================
 Usage: docr [COMMAND]
 
@@ -42,19 +41,20 @@ directory.
 Container orchestration:
   --logs     -l    : get logs from the main app
   --status   -i    : environment status
-  --list     -ps   : list running containers 
+  --list     -ps   : list running containers
   --start    -s    : starts the container
   --stop     -q    : stops the container
   --restart        : restarts the container
   --remove   -rm   : stops the container and removes associated volumes
   --recreate       : recreates the container environment
   --rebuild        : rebuilds the container environment
+  --attach   -a    : attach to a running container instance
+  --create         : executes the \$BOOTSTRAP_SCRIPT an starts the container
   --help     -h    : this help
 
 Tool management:
   --upgrade        : upgrades the tool binary to the most recent version
 ==============================================================================
-
 ```
 
 ### Configuration
